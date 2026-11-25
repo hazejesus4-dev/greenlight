@@ -8,8 +8,8 @@ import { defaultSettings } from '../renderer/context/userContext.defaults'
 
 export default class WebUI {
     _application:Application
-    _express:express
-    _ws:expressWS
+    _express:expressWS.Application
+    _ws:expressWS.Instance
     _ipc:Ipc
     _server
 
@@ -31,7 +31,7 @@ export default class WebUI {
 
     startServer(port:number = 3000){
         this._application.log('webui', 'Starting webserver...')
-        this._express = express()
+        this._express = express() as unknown as expressWS.Application
         this._ws = expressWS(this._express)
         this._ipc = this._application._ipc
 
@@ -69,7 +69,7 @@ export default class WebUI {
             }
 
             ws.on('message', (msg) => {
-                const ipcData = JSON.parse(msg)
+                const ipcData = JSON.parse(msg.toString())
                 this._application.log('webui:websocket', 'Received event:', ipcData)
 
                 this._application._webUI._ipc._channels[ipcData.channel].onEvent(ipcData.channel, undefined, {
