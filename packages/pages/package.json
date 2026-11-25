@@ -17,6 +17,7 @@
 		"@vitest/runner": "^4.1.0",
 		"@vitest/snapshot": "^4.1.0",
 		"typescript": "^5.5.2",
+		"vite": "^8.3.8",
 		"vitest": "^4.1.0",
 		"wrangler": "^4.140.0"
 	}

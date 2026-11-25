@@ -22,6 +22,9 @@
     "deploy:pages": "yarn pages deploy",
     "test:v3": "yarn logger test && yarn platform test"
   },
+  "devDependencies": {
+    "react": "^19.3.1"
+  },
   "workspaces": [
     "packages/logger",
     "packages/player",
