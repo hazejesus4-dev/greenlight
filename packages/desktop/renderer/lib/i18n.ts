@@ -16,12 +16,26 @@ function importAllLanguages(): Record<string, { translation: any }> {
 
 const resources = importAllLanguages();
 
+// i18next must be initialized only once. Later calls just switch language,
+// and wait for the first init to finish to avoid a race on the first render.
+let initializationPromise: Promise<any> | undefined;
+
 // Function to initialize i18n with language from settings
 export function initI18nWithLanguage(settings) {
-    console.log("[i18n] Initializing i18n with settings:", settings);
   const initialLanguage = settings?.language || "en-US";
+
+  if (initializationPromise) {
+    return initializationPromise.then(() => {
+      if (i18n.language !== initialLanguage) {
+        console.log("[i18n] Changing language to:", initialLanguage);
+        return i18n.changeLanguage(initialLanguage);
+      }
+    });
+  }
+
+  console.log("[i18n] Initializing i18n with settings:", settings);
   console.log("[i18n] Initializing i18n with language:", initialLanguage);
-  i18n.use(initReactI18next).init({
+  initializationPromise = i18n.use(initReactI18next).init({
     resources,
     lng: initialLanguage,
     fallbackLng: initialLanguage,
@@ -33,6 +47,12 @@ export function initI18nWithLanguage(settings) {
   }).catch((err) => {
     console.error("[i18n] i18n initialization error:", err);
   });
+
+  return initializationPromise;
 }
+
+// Initialize eagerly so `useTranslation()` has an instance on the first render.
+// LanguageProvider re-initializes with the persisted language once settings load.
+initI18nWithLanguage({ language: 'en-US' });
 
 export default i18n;

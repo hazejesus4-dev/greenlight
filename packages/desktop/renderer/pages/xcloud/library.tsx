@@ -6,7 +6,7 @@ import Loader from '../../components/ui/loader'
 import ViewportGrid from '../../components/ui/viewportgrid'
 import GameTitleDynamic from '../../components/ui/game/titledynamic'
 import BreadcrumbBar from '../../components/ui/breadcrumbbar'
-import { useQuery } from 'react-query'
+import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
 
@@ -27,11 +27,12 @@ function xCloudLibrary() {
     }, [searchTerm])
 
     const trimmedSearch = debouncedSearch.trim()
-    const titlesQuery = useQuery(
-        ['xCloudTitles', trimmedSearch, gamePassOnly],
-        () => Ipc.send('xCloud', 'filterTitles', { name: trimmedSearch, onlyEntitled: gamePassOnly }),
-        { staleTime: 60 * 1000, keepPreviousData: true }
-    )
+    const titlesQuery = useQuery({
+        queryKey: ['xCloudTitles', trimmedSearch, gamePassOnly],
+        queryFn: () => Ipc.send('xCloud', 'filterTitles', { name: trimmedSearch, onlyEntitled: gamePassOnly }),
+        staleTime: 60 * 1000,
+        placeholderData: keepPreviousData
+    })
 
     const titles: string[] = titlesQuery.data || []
 

@@ -7,14 +7,14 @@ import { useRouter } from 'next/router'
 import BreadcrumbBar from '../../../components/ui/breadcrumbbar'
 import Button from '../../../components/ui/button'
 import Loader from '../../../components/ui/loader'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
 
 
 function xCloudInfo() {
     const router = useRouter()
-    const productDetails = useQuery('xcloudinfo_titleId_'+router.query.titleid, () => Ipc.send('xCloud', 'getTitle', { titleId: router.query.titleid}), { staleTime: 10*1000 })
+    const productDetails = useQuery({ queryKey: ['xcloudinfo_titleId_', router.query.titleid], queryFn: () => Ipc.send('xCloud', 'getTitle', { titleId: router.query.titleid }), staleTime: 10*1000 })
     const [productName, setProductName] = React.useState('...')
     const { t } = useTranslation()
     const hasEntitlement = productDetails.data?.hasEntitlement !== false

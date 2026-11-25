@@ -16,13 +16,13 @@ import { LanguageProvider } from '../context/languageContext'
 import {
     QueryClient,
     QueryClientProvider,
-} from 'react-query'
+} from '@tanstack/react-query'
 
 
 // This default export is required in a new `pages/_app.js` file.
 export default function MyApp({ Component, pageProps }) {
     const router = useRouter()
-    const queryClient = new QueryClient()
+    const [queryClient] = React.useState(() => new QueryClient())
 
     const [loggedIn, setLoginState] = React.useState(false)
     const [prevUserState, setPrevUserState] = React.useState({
@@ -48,10 +48,7 @@ export default function MyApp({ Component, pageProps }) {
         })
 
         const authInterval = setInterval(() => {
-            console.log('Requesting AuthState...')
             Ipc.send('app', 'getAuthState').then((args) => {
-                console.log('Received AuthState:', args)
-
                 if(args.isAuthenticating === true){
                     setIsLoading(true)
                     setPrevUserState({ ...prevUserState, ...args.user})

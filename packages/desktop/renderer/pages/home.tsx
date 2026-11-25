@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
 import Ipc from '../lib/ipc'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
 import Button from '../components/ui/button'
@@ -12,7 +12,7 @@ import Label from '../components/ui/label'
 import Loader from '../components/ui/loader'
 
 function Home() {
-    const consoles = useQuery('consoles', () => Ipc.send('consoles', 'get'), { staleTime: 60*1000 })
+    const consoles = useQuery({ queryKey: ['consoles'], queryFn: () => Ipc.send('consoles', 'get'), staleTime: 60*1000 })
     const { t } = useTranslation()
 
     return (

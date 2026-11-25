@@ -5,16 +5,16 @@ import Ipc from '../../lib/ipc'
 import Button from '../../components/ui/button'
 import BreadcrumbBar from '../../components/ui/breadcrumbbar'
 import TitleRow from '../../components/xcloud/titleRow'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '../../context/userContext'
 
 function xCloudHome() {
     const { t } = useTranslation()
     const { settings } = useSettings()
-    useQuery(['xCloudTitles', settings.xcloud_show_non_entitled], () => Ipc.send('xCloud', 'getTitles', { showNonEntitled: settings.xcloud_show_non_entitled }), { staleTime: 300*1000 })
-    const xCloudNewTitles = useQuery(['xCloudNewTitles', settings.xcloud_show_non_entitled], () => Ipc.send('xCloud', 'getNewTitles', { showNonEntitled: settings.xcloud_show_non_entitled }), { staleTime: 60*1000 })
-    const xCloudRecentTitles = useQuery('xCloudRecentTitles', () => Ipc.send('xCloud', 'getRecentTitles'), { staleTime: 10*1000 })
+    useQuery({ queryKey: ['xCloudTitles', settings.xcloud_show_non_entitled], queryFn: () => Ipc.send('xCloud', 'getTitles', { showNonEntitled: settings.xcloud_show_non_entitled }), staleTime: 300*1000 })
+    const xCloudNewTitles = useQuery({ queryKey: ['xCloudNewTitles', settings.xcloud_show_non_entitled], queryFn: () => Ipc.send('xCloud', 'getNewTitles', { showNonEntitled: settings.xcloud_show_non_entitled }), staleTime: 60*1000 })
+    const xCloudRecentTitles = useQuery({ queryKey: ['xCloudRecentTitles'], queryFn: () => Ipc.send('xCloud', 'getRecentTitles'), staleTime: 10*1000 })
 
     return (
         <React.Fragment>

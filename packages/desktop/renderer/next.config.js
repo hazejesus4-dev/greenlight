@@ -1,5 +1,7 @@
+const path = require('path')
+
 module.exports = {
-  turbopack: {},
+  turbopack: { root: path.resolve(__dirname, '../../..') },
   
   webpack: (config, { isServer }) => {
     if (!isServer) {
